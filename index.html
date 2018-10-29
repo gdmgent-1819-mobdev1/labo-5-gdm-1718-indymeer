@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <title>My Pen</title>
+</head>
+
+<body>
+
+    <!--
+  This was created based on the Dribble shot by Deepak Yadav that you can find at https://goo.gl/XRALsw
+  I am @hurickkrugner on Twitter or @hk95 on GitHub. Feel free to message me anytime.
+-->
+
+<section class="user">
+        <div class="user_options-container">
+          <div class="user_options-text">
+            <div class="user_options-unregistered">
+              <h2 class="user_unregistered-title">Don't have an account?</h2>
+              <p class="user_unregistered-text">Lorem ipsum ditum not yet.</p>
+              <button class="user_unregistered-signup" id="signup-button">Sign up</button>
+            </div>
+      
+            <div class="user_options-registered">
+              <h2 class="user_registered-title">Have an account?</h2>
+              <p class="user_registered-text">Lorem ipsum ditum not yet.</p>
+              <button class="user_registered-login" id="login-button">Login</button>
+            </div>
+          </div>
+          
+          <div class="user_options-forms" id="user_options-forms">
+            <div class="user_forms-login">
+              <h2 class="forms_title">Login</h2>
+              <form class="forms_form">
+                <fieldset class="forms_fieldset">
+                  <div class="forms_field">
+                        <label for="login_email">Email</label>
+                        <input type="email" name="login_email" class="forms_field-input" id="login_email">
+                  </div>
+                  <div class="forms_field">
+                        <label for="login_password">Password</label>
+                        <input type="password" name="login_password" class="forms_field-input" id="login_password">
+                  </div>
+                </fieldset>
+                <div class="forms_buttons">
+                  <button type="button" class="forms_buttons-forgot">Forgot password?</button>
+                  <input type="submit" value="Log In" id="btn_login" class="forms_buttons-action">
+                </div>
+                <p class="error" id="login_error"></p>
+
+              </form>
+            </div>
+            <div class="user_forms-signup">
+              <h2 class="forms_title">Sign Up</h2>
+              <form class="forms_form">
+                <fieldset class="forms_fieldset">
+                  <div class="forms_field">
+                    <input type="text" placeholder="Full Name" class="forms_field-input" required />
+                  </div>
+                  <div class="forms_field">
+                    <label for="signup_email">Email</label>
+                    <input type="email" name="signup_email" id="signup_email" class="forms_field-input">
+                  </div>
+                  <div class="forms_field">
+                        <label for="signup_password">Password</label>
+                        <input type="password" name="signup_password" class="forms_field-input" id="signup_password">
+                  </div>
+                </fieldset>
+                <div class="forms_buttons">
+                  <input type="submit" value="Sign up" id="btn_signup" class="forms_buttons-action">
+                </div>
+                <p class="error" id="signup_error"></p>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    <div>
+
+    
+    <div id="user_info"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyBClVw87bbB4rzjSrTyy-DDs24YSizdsqQ",
+        authDomain: "lab5-51c5e.firebaseapp.com",
+        databaseURL: "https://lab5-51c5e.firebaseio.com",
+        projectId: "lab5-51c5e",
+        storageBucket: "lab5-51c5e.appspot.com",
+        messagingSenderId: "254036744848"
+      };
+      firebase.initializeApp(config);
+    </script>
+        <script src="js/login.js"></script>
+
+</body>
+
+</html>
