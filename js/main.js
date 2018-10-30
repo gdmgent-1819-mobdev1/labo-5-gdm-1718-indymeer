@@ -10,6 +10,8 @@ function append(parent, el) {
 let createPostButton = document.getElementById('plus');
 let submit = document.getElementById('saveForm');
 let form = document.getElementById('activityform');
+let anna = document.querySelectorAll('#postsettings');
+
 
 
 
@@ -42,6 +44,8 @@ submit.addEventListener("click", function(e){
     form.style.display = "none";
     });
 
+
+
 const ul = document.querySelector('#feed');
 
 function createItems(){
@@ -68,9 +72,8 @@ function createItems(){
     postOption.className = "post-options-holder";
     tools.className = "tools";
     ellipsis.className = "fa fa-ellipsis-v";
-    ellipsis.id = "postsettings"
+    ellipsis.id = "postsettings";
 
-    
     
     append(tools, ellipsis);
     append(postOption, tools);
@@ -82,15 +85,39 @@ function createItems(){
     append(container, iconHolder);
     append(ul, container);
 
-
     
+
+
     title.innerHTML = document.querySelector('#activityTitle').value;
-    description.innerHTML =  document.querySelector('#activityDescription').value;
+    description.innerHTML =" <div id=\"editable0\" contenteditable=\"false\" onDblClick=\"editorInit('editable0');\">" + document.querySelector('#activityDescription').value + "</div>";
 
-    
+
 }
 
 
+anna.addEventListener("click", function(e){
+    e.preventDefault();
+    insertEditorScript();
+})
+var editor, html = '';
 
+function createEditor() {
+    if ( editor )
+        return;
+    
+    var config = {};
+    editor = CKEDITOR.appendTo( 'editor', config, html );
+}
 
+function insertEditorScript(){
+    var externalScript = document.createElement( 'script' );
+    externalScript.setAttribute( 'src','https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js' );
+    document.head.appendChild( externalScript );
 
+var createCKE = window.setInterval( function() {
+ if( CKEDITOR ) {
+   createEditor();
+   clearInterval( createCKE );
+ }
+}, 100 );
+}
