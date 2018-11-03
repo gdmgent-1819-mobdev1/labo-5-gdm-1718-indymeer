@@ -1,4 +1,3 @@
-
 function createNode(element) {
     return document.createElement(element);
 }
@@ -6,6 +5,9 @@ function createNode(element) {
 function append(parent, el) {
     return parent.appendChild(el);
 }
+
+
+// look for elements
 
 let createPostButton = document.getElementById('plus');
 let submit = document.getElementById('saveForm');
@@ -27,11 +29,41 @@ function logOut(){
     })
 }
 
+// WHEN USER IS ACTIVE 
+
+firebase.auth().onAuthStateChanged((user) => {
+    if(user) {
+        statusbar.innerHTML = `<div id="logoutbut"><a href="#" id="logout">Log Out</a></div><!--End of Logout -->`
+        createPostButton.classList.remove('hidden');
+        more.classList.remove('hidden');
+
+        console.log(user.displayName);
+
+        if(!user.emailVerified) {
+            alertArea.innerHTML = `
+            <div class='alerts_warning'><strong><i class="fas fa-exclamation-triangle"></i>Verification: </strong> Make sure to verify your email address. <a href='' id='verifyMe'>Re-send verification email</a><button type='button' class='btn' id='closeAlert'><i class="fas fa-times"></i></button></div>
+            `
+            setTimeout(() => {
+                alertArea.innerHTML = ``;
+            }, (2 * 60 * 1000));
+        }
+    } else {
+        statusbar.innerHTML = `<a href='pages/login.html'><button type='button' class='btn primary'>Log in / Sign up</button></a>`
+        createPostButton.classList.add('hidden');
+        more.classList.add('hidden');
+
+
+    }
+});
+
+
+//DELETE BUTTON
+
 DeletePost = (id) => {
     database.collection('feed-item').doc(id).delete()
 
     .then(() => {
-        GetNotification(`Aww...`, `We're sad to see your post go, but hopeful for new content!`)
+        GetNotification(`Deleted i see - Yoda`)
         document.getElementById('feed-item').innerHTML = ""
 
     })
@@ -159,7 +191,7 @@ ClassicEditor
         console.error( err.stack );
     } );
 
-
+// ADD eventlisteners when element is created
 
 document.addEventListener('click', (event) => {
     if(event.target) {
@@ -178,27 +210,3 @@ document.addEventListener('click', (event) => {
 })
 
    
-firebase.auth().onAuthStateChanged((user) => {
-    if(user) {
-        statusbar.innerHTML = `<div id="logoutbut"><a href="#" id="logout">Log Out</a></div><!--End of Logout -->`
-        createPostButton.classList.remove('hidden');
-        more.classList.remove('hidden');
-
-        console.log(user.displayName);
-
-        if(!user.emailVerified) {
-            alertArea.innerHTML = `
-            <div class='alerts_warning'><strong><i class="fas fa-exclamation-triangle"></i>Verification: </strong> Make sure to verify your email address. <a href='' id='verifyMe'>Re-send verification email</a><button type='button' class='btn' id='closeAlert'><i class="fas fa-times"></i></button></div>
-            `
-            setTimeout(() => {
-                alertArea.innerHTML = ``;
-            }, (2 * 60 * 1000));
-        }
-    } else {
-        statusbar.innerHTML = `<a href='pages/login.html'><button type='button' class='btn primary'>Log in / Sign up</button></a>`
-        createPostButton.classList.add('hidden');
-        more.classList.add('hidden');
-
-
-    }
-});

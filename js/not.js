@@ -10,7 +10,7 @@ function GetNotification(title, text) {
 
     if(Notification.permission === 'granted') {
     let notification = new Notification(title, {
-        icon: 'https://octodex.github.com/images/codercat.jpg',
+        icon: 'https://octodex.github.com/images/saint_nictocat.jpg',
         body: text
     });
 
@@ -33,5 +33,4 @@ reqPerms = () => {
 // if supported call notifications
 if(checkIfsupported) {
     reqPerms();
-    // fireNotification(`Thank you!`, `Notifications help us notifying you of your actions around our app!`);
 }
