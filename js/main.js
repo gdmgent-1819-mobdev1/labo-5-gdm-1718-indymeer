@@ -10,9 +10,30 @@ function append(parent, el) {
 let createPostButton = document.getElementById('plus');
 let submit = document.getElementById('saveForm');
 let form = document.getElementById('activityform');
-let anna = document.querySelectorAll('#postsettings');
+let logOutButton = document.getElementById('logout');
+let statusbar = document.getElementById('status');
+let editor;
 
 
+// firebase logout
+
+function logOut(){
+    firebase.auth().signOut()
+    .then(() =>{
+        GetNotification(`signedOut`, `Thank you come again - Apu`)
+        window.location.reload();
+    })
+}
+
+DeletePost = (id) => {
+    database.collection('feed-item').doc(id).delete()
+    document.getElementById('feed-item')[0].innerHTML = ""
+
+    .then(() => {
+        GetNotification(`Aww...`, `We're sad to see your post go, but hopeful for new content!`)
+    })
+    .catch(error => alert('error')); 
+ }
 
 
 function closest(e, t){ 
@@ -35,89 +56,137 @@ document.body.addEventListener("click", function(e) {
 
 
 // SUBMIT FORM BUTTON: RESET FORM AND HIDE THE FORM
-
-submit.addEventListener("click", function(e){
-    e.preventDefault();
-    console.log('button clicked');
-    createItems();
-    document.getElementById("newActivity").reset();
-    form.style.display = "none";
-    });
+var ref = new Firebase("https://lab5-51c5e.firebaseio.com/content");
 
 
+function timeStamp() {
+  var now = new Date();
+  var date = [now.getMonth() + 1, now.getDate(), now.getFullYear()];
+  var time = [now.getHours(), now.getMinutes()];
+  var suffix = (time[0] < 12) ? "AM" : "PM";
+  time[0] = (time[0] < 12) ? time[0] : time[0] - 12;
 
-const ul = document.querySelector('#feed');
+  for (var i = 1; i < 3; i++) {
+    if (time[i] < 10) {
+      time[i] = "0" + time[i];
+    }
+  }
 
-function createItems(){
-
-    // GENERATE DIVS FOR CONTAINERS
-    let container = createNode("div");
-    let iconHolder = createNode("div");
-    let icon = createNode("div");
-    let textHolder = createNode("div");
-    let title = createNode("div");
-    let description = createNode("div");
-    let postOption = createNode("div");
-    let tools = createNode("div");
-    let ellipsis = createNode("i");
-
-    // CLASSNAMES 
-
-    container.className = "feed-item";
-    iconHolder.className = "icon-holder";
-    icon.className = "icon";
-    textHolder.className = "text-holder col-3-5";
-    title.className = "feed-title";
-    description.className = "feed-description";
-    postOption.className = "post-options-holder";
-    tools.className = "tools";
-    ellipsis.className = "fa fa-ellipsis-v";
-    ellipsis.id = "postsettings";
-
-    
-    append(tools, ellipsis);
-    append(postOption, tools);
-    append(textHolder, title);
-    append(textHolder, description);
-    append(container, textHolder);
-    append(iconHolder, icon);
-    append(container, postOption);
-    append(container, iconHolder);
-    append(ul, container);
-
-    
-
-
-    title.innerHTML = document.querySelector('#activityTitle').value;
-    description.innerHTML =" <div id=\"editable0\" contenteditable=\"false\" onDblClick=\"editorInit('editable0');\">" + document.querySelector('#activityDescription').value + "</div>";
-
-
+  return date.join("/") + ", " + time.join(":") + " " + suffix;
 }
 
+ref.on("child_added", function(snapshot) {
+  var comment = snapshot.val();
+  addComment(comment.name, comment.comment, comment.time, comment.author, comment.uid);
+  console.log(comment);
+});
 
-anna.addEventListener("click", function(e){
-    e.preventDefault();
-    insertEditorScript();
+
+
+function postComment() {
+  const name = document.getElementById("name").value;
+    const  comment = myEditor.getData();
+     const time = timeStamp();
+     const author = firebase.auth().currentUser.displayName;
+   const uid = firebase.auth().currentUser.uid;
+  
+   database.collection('feed-items').add({
+    author: author,
+    comment: comment,
+    title: title,
+    time: time,
+    uid: uid
 })
-var editor, html = '';
 
-function createEditor() {
-    if ( editor )
-        return;
-    
-    var config = {};
-    editor = CKEDITOR.appendTo( 'editor', config, html );
+  if (name && comment && author && uid) {
+    ref.push({
+      name: name,
+      comment: comment,
+      time: time,
+      author: author,
+      uid : uid
+    });
+  }
+
+  document.getElementById("name").value = '';
+ // document.getElementById("comment").value = '';
 }
 
-function insertEditorScript(){
-    var externalScript = document.createElement( 'script' );
-    externalScript.setAttribute( 'src','https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js' );
-    document.head.appendChild( externalScript );
+ function addComment(name, comment, timeStamp, author,  doc){
+  let comments = document.getElementById("comments");
+  comments.innerHTML = `
+  
+  <div class="feed-item ">
+  <div class="icon-holder"><div class="icon"></div></div>
+  <div class="text-holder col-3-5">
+    <div class="feed-title">${name}</div>
+    <div class="feed-description"> ${comment}   </div>      
+    <div>${timeStamp} <b>${author}</b>  </div>
+    <div class='post-actions'>
+    </div>
+   
+  </div><!--end of text-holder--> 
+  <div class="post-options-holder">
+    <div class= "tools"  > 
+    <i class="fa fa-ellipsis-v" id="postsettings" onclick= "createEditor();"></i>
+    </div><!--End Tools-->
+    <div class= "tools"  > 
+    <i class="fa fa-trash" id="trashsettings" onclick= "DeletePost();"></i>
+    </div><!--End Tools-->
+ 
+ 
+  </div><!--End Post Options Holder -->
+</div><!--end of feed item--></div> 
+${comments.innerHTML}
+`;
 
-var createCKE = window.setInterval( function() {
- if( CKEDITOR ) {
-   createEditor();
-   clearInterval( createCKE );
- }
-}, 100 );
 }
+
+
+// ADD CK EDITOR
+var myEditor;
+
+ClassicEditor
+    .create( document.querySelector( '#comment' ) )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+        myEditor = editor;
+    } )
+    .catch( err => {
+        console.error( err.stack );
+    } );
+
+
+
+document.addEventListener('click', (event) => {
+    if(event.target) {
+        if(event.target.id == 'logout') {
+            logout();
+        }
+        if(event.target.classList.contains('deletePost')) {
+            let post_id = event.target.id.split('_')[1];
+            deletePost(post_id);
+        }
+    }
+})
+
+   
+firebase.auth().onAuthStateChanged((user) => {
+    if(user) {
+        statusbar.innerHTML = `<div id="logoutbut"><a href="#" id="logout">Log Out</a></div><!--End of Logout -->`
+        createPostButton.classList.remove('hidden');
+        console.log(user.displayName);
+
+        if(!user.emailVerified) {
+            alertArea.innerHTML = `
+            <div class='alerts_warning'><strong><i class="fas fa-exclamation-triangle"></i>Verification: </strong> Make sure to verify your email address. <a href='' id='verifyMe'>Re-send verification email</a><button type='button' class='btn' id='closeAlert'><i class="fas fa-times"></i></button></div>
+            `
+            setTimeout(() => {
+                alertArea.innerHTML = ``;
+            }, (2 * 60 * 1000));
+        }
+    } else {
+        statusbar.innerHTML = `<a href='pages/login.html'><button type='button' class='btn primary'>Log in / Sign up</button></a>`
+        createPostButton.classList.add('hidden');
+    }
+});

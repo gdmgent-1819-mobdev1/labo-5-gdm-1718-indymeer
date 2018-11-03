@@ -3,101 +3,99 @@
  * 
  * 
  */
-(function () {
-  var el = document.getElementById('btn_signup');
-if(el){
-  el.addEventListener('click', signup, false);
+
+/* Variables
+*/
+const signupButton = document.getElementById('signup-button');
+const loginButton = document.getElementById('login-button');
+const   userForms = document.getElementById('user_options-forms');
+const   Goback = document.getElementById('goBack');
+const   submitLogin = document.getElementById('btn_login');
+const   submitRegister = document.getElementById('btn_signup');
+
+
+ // turn back to blog
+toHome = () => {
+  window.location.replace('../index.html');
 }
-var ee = document.getElementById('btn_login');
-if(ee){
-  el.addEventListener('click', login, false);
+
+
+
+
+
+// LOGIN 
+
+function login(e) {
+e.preventDefault();
+  const email = document.getElementById("login_email").value;
+  const password = document.getElementById("login_password").value;
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(() => {
+    GetNotification('You are now logged in successfully!');
+    toHome();
+
+  })
+  /*  .catch(function (error) {
+    // Handle Errors here.
+    let errorCode = error.code;
+    let errorMessage = error.message;
+
+    console.log(errorCode, errorMessage);
+    document.getElementsByClassName('alerts').innerHTML = errorCode + " - " + errorMessage;
+  });*/
 }
-  requestNotificationPermission();
-})();
+
+
+// SIGNUP 
 
 function signup(e) {
   e.preventDefault();
 
-  let email = document.getElementById("signup_email").value;
-  let password = document.getElementById("signup_password").value;
+  const email = document.getElementById("signup_email").value;
+  const password = document.getElementById("signup_password").value;
+  const username = document.getElementById('username').value;
+  const auth = firebase.auth();
 
-  firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(function (response) {
-    window.location = "pages/blog.html";
-   // let createButton = document.getElementById('plus');
-  //  createButton.style.cssText = "opacity: 1; z-index: 110;";
-    sendNotification('Thanks for signing up to our website! Check your e-mail for account verification!');
-    sendVerificationEmail(response.user);
+auth.createUserWithEmailAndPassword(email, password)
+    .then(() => {
+      auth.currentUser.updateProfile({
+        displayName: username
+      })
+      auth.currentUser.sendEmailVerification()
+      .then(() => {
+        GetNotification(`Thanks for signing up to our website! Check your e-mail for account verification!`);
+        toHome();     
+      })
   })
-    .catch(function (error) {
+  /*  .catch(function (error) {
     // Handle Errors here.
     let errorCode = error.code;
     let errorMessage = error.message; 
 
     console.log(errorCode, errorMessage);
-    document.getElementById('signup_error').innerHTML = errorCode + " - " + errorMessage;
-  });
+    document.getElementsByClassName('alerts').innerHTML = errorCode + " - " + errorMessage;
+  });*/
 }
 
-function login(e) {
-  e.preventDefault();
+// PASSWORD
 
-  let email = document.getElementById("login_email").value;
-  let password = document.getElementById("login_password").value;
 
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(function (response) {
-   // window.location = "pages/blog.html";
-    sendNotification('You are now logged in successfully!');
-    showUserInfo(response.user);
-    
-    //let createButton = document.getElementById('plus');
-    //createButton.style.cssText = "opacity: 1; z-index: 110;";
-
+function PasswordLost(){
+  const email = document.getElementById('emailForgot').value;
+  firebase.auth().sendPasswordResetEmail(email)
+  .then(() =>{
+    GetNotification(`HELP IS ON THE WAY` , `Get something to drink in the meantime `);
+    toHome();
   })
-    .catch(function (error) {
+  .catch(function (error) {
     // Handle Errors here.
     let errorCode = error.code;
     let errorMessage = error.message;
 
     console.log(errorCode, errorMessage);
-    document.getElementById('login_error').innerHTML = errorCode + " - " + errorMessage;
+    document.getElementsByClassName('alerts').innerHTML = errorCode + " - " + errorMessage;
   });
-}
-
-function sendVerificationEmail(user) {
-  user.sendEmailVerification()
-    .then(function () {
-    // Email sent.
-  }).catch(function (error) {
-    // Handle Errors here.
-    let errorCode = error.code;
-    let errorMessage = error.message;
-
-    console.log(errorCode, errorMessage);
-  });
-}
-
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-   window.location = 'pages/blog.html';
-   createButton.style.cssText = "opacity: 1; z-index: 110;";
-
-  }
-});
-
-function sendNotification(msg) {
-  let notif = new Notification(msg);
-}
-
-function requestNotificationPermission() {
-  if (Notification && Notification.permission === 'default') {
-    Notification.requestPermission(function (permission) {
-      if (!('permission' in Notification)) {
-        Notification.permission = permission;
-      }
-    });
-  }
 }
 
 function showUserInfo(user) {
@@ -105,11 +103,6 @@ function showUserInfo(user) {
 }
 
 /**
- * Variables
- */
-const signupButton = document.getElementById('signup-button'),
-    loginButton = document.getElementById('login-button'),
-    userForms = document.getElementById('user_options-forms')
 
 /**
  * Add event listener to the "Sign Up" button
@@ -126,3 +119,7 @@ loginButton.addEventListener('click', () => {
   userForms.classList.remove('bounceLeft')
   userForms.classList.add('bounceRight')
 }, false)
+
+Goback.addEventListener('click', toHome);
+submitLogin.addEventListener('click', login);
+submitRegister.addEventListener('click', signup);
