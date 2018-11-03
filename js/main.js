@@ -12,6 +12,8 @@ let submit = document.getElementById('saveForm');
 let form = document.getElementById('activityform');
 let logOutButton = document.getElementById('logout');
 let statusbar = document.getElementById('status');
+let alertArea = document.getElementsByClassName('alerts');
+let more = document.getElementById('tools');
 let editor;
 
 
@@ -27,10 +29,11 @@ function logOut(){
 
 DeletePost = (id) => {
     database.collection('feed-item').doc(id).delete()
-    document.getElementById('feed-item')[0].innerHTML = ""
 
     .then(() => {
         GetNotification(`Aww...`, `We're sad to see your post go, but hopeful for new content!`)
+        document.getElementById('feed-item').innerHTML = ""
+
     })
     .catch(error => alert('error')); 
  }
@@ -127,11 +130,11 @@ function postComment() {
    
   </div><!--end of text-holder--> 
   <div class="post-options-holder">
-    <div class= "tools"  > 
-    <i class="fa fa-ellipsis-v" id="postsettings" onclick= "createEditor();"></i>
+    <div id= "tools" class="hidden" > 
+    <i class="fa fa-ellipsis-v " id="postsettings" onclick= "createEditor();"></i>
     </div><!--End Tools-->
-    <div class= "tools"  > 
-    <i class="fa fa-trash" id="trashsettings" onclick= "DeletePost();"></i>
+    <div id= "tools" class="hidden" > 
+    <i class="fa fa-trash " id="trashsettings" onclick= "DeletePost(id);"></i>
     </div><!--End Tools-->
  
  
@@ -161,7 +164,11 @@ ClassicEditor
 document.addEventListener('click', (event) => {
     if(event.target) {
         if(event.target.id == 'logout') {
-            logout();
+            logOut();
+        }
+        if(event.target.classList.contains('editPost')) {
+            let post_id = event.target.id.split('_')[1];
+            editPost(post_id);
         }
         if(event.target.classList.contains('deletePost')) {
             let post_id = event.target.id.split('_')[1];
@@ -175,6 +182,8 @@ firebase.auth().onAuthStateChanged((user) => {
     if(user) {
         statusbar.innerHTML = `<div id="logoutbut"><a href="#" id="logout">Log Out</a></div><!--End of Logout -->`
         createPostButton.classList.remove('hidden');
+        more.classList.remove('hidden');
+
         console.log(user.displayName);
 
         if(!user.emailVerified) {
@@ -188,5 +197,8 @@ firebase.auth().onAuthStateChanged((user) => {
     } else {
         statusbar.innerHTML = `<a href='pages/login.html'><button type='button' class='btn primary'>Log in / Sign up</button></a>`
         createPostButton.classList.add('hidden');
+        more.classList.add('hidden');
+
+
     }
 });
