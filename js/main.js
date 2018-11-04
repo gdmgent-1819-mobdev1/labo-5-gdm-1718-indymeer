@@ -29,32 +29,7 @@ function logOut(){
     })
 }
 
-// WHEN USER IS ACTIVE 
 
-firebase.auth().onAuthStateChanged((user) => {
-    if(user) {
-        statusbar.innerHTML = `<div id="logoutbut"><a href="#" id="logout">Log Out</a></div><!--End of Logout -->`
-        createPostButton.classList.remove('hidden');
-        more.classList.remove('hidden');
-
-        console.log(user.displayName);
-
-        if(!user.emailVerified) {
-            alertArea.innerHTML = `
-            <div class='alerts_warning'><strong><i class="fas fa-exclamation-triangle"></i>Verification: </strong> Make sure to verify your email address. <a href='' id='verifyMe'>Re-send verification email</a><button type='button' class='btn' id='closeAlert'><i class="fas fa-times"></i></button></div>
-            `
-            setTimeout(() => {
-                alertArea.innerHTML = ``;
-            }, (2 * 60 * 1000));
-        }
-    } else {
-        statusbar.innerHTML = `<a href='pages/login.html'><button type='button' class='btn primary'>Log in / Sign up</button></a>`
-        createPostButton.classList.add('hidden');
-        more.classList.add('hidden');
-
-
-    }
-});
 
 
 //DELETE BUTTON
@@ -126,11 +101,11 @@ function postComment() {
    const uid = firebase.auth().currentUser.uid;
   
    database.collection('feed-items').add({
-    author: author,
+    name: name,
     comment: comment,
-    title: title,
     time: time,
-    uid: uid
+    author: author,
+    uid : uid
 })
 
   if (name && comment && author && uid) {
@@ -191,6 +166,35 @@ ClassicEditor
         console.error( err.stack );
     } );
 
+
+
+
+    // WHEN USER IS ACTIVE 
+
+firebase.auth().onAuthStateChanged((user) => {
+    if(user) {
+        statusbar.innerHTML = `<div id="logoutbut"><a href="#" id="logout">Log Out</a></div><!--End of Logout -->`
+        createPostButton.classList.remove('hidden');
+        more.classList.remove('hidden');
+
+        console.log(user.displayName);
+
+        if(!user.emailVerified) {
+            alertArea.innerHTML = `
+            <div class='alerts_warning'><strong><i class="fas fa-exclamation-triangle"></i>Verification: </strong> Make sure to verify your email address. <a href='' id='verifyMe'>Re-send verification email</a><button type='button' class='btn' id='closeAlert'><i class="fas fa-times"></i></button></div>
+            `
+            setTimeout(() => {
+                alertArea.innerHTML = ``;
+            }, (2 * 60 * 1000));
+        }
+    } else {
+        statusbar.innerHTML = `<a href='pages/login.html'><button type='button' class='btn primary'>Log in / Sign up</button></a>`
+        createPostButton.classList.add('hidden');
+        more.classList.add('hidden');
+
+
+    }
+});
 // ADD eventlisteners when element is created
 
 document.addEventListener('click', (event) => {

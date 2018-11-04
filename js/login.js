@@ -15,6 +15,7 @@ const   submitRegister = document.getElementById('btn_signup');
 
 
 // google login
+/*
 function callGoogleSignIn(){
   var provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithPopup(provider).then(function(result) {
@@ -40,7 +41,7 @@ toHome = () => {
   window.location.replace('../index.html');
 }
 
-
+*/
 
 
 
