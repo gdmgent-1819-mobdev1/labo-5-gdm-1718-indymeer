@@ -1,120 +1,111 @@
 <html>
   <head>
-    <meta name="viewport" content= "width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#B71C1C">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+    <!-- CKEditor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/11.1.1/classic/ckeditor.js"></script>
+</head>
 
-      <!-- Firebase -->
-      <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
-      <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
-            <!-- CKEditor -->
-            <script src="https://cdn.ckeditor.com/ckeditor5/11.1.1/classic/ckeditor.js"></script>
-    </head>
-    <body>
-      <div class='alerts'>
+<body>
+    <div class='alerts'>
     </div>
-  
-      <div class="allholder">
-        
+
+    <div class="allholder">
+
         <div class="navoverlay"></div>
-       
-        
-        
-  
-          
-        <div class="feed" id ="feed">  <!--1 Column Feed Item Holder, posts goes here-->
-          <div id="content">
-          <div class="container">
-              <div class="comment-box">
-                <div class="comment-form">
-                
+
+        <div class="feed" id="feed">
+            <!--1 Column Feed Item Holder, posts goes here-->
+            <div id="content">
+                <div class="container">
+                    <div class="comment-box">
+                        <div class="comment-form"></div>
+                        <div>
+                            <h2 class="header">See the New Blogs</h2>
+                            <div id="comments"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--end of Feed-->
+    </div>
+    <!--end of allholder-->
+
+    <div class="bodyholder">
+        <div id="status" class="status-bar">
+
+        </div>
+        <!--End of Status Bar-->
+        <div class="toolbar">
+            <div class='nav-links'>
+                <!-- Log in/ log out button goes here -->
+            </div>
+            <div id="hamburger">
+                <i class="fa fa-bars"></i>
+            </div>
+            <!--end of hamburger-->
+
+            <div id="apptitle">
+                <h1>News Feed</h1>
+            </div>
+
+            <div id="tools">
+                <ul>
+                    <li><i class="fa fa-search" id="search"></i></li>
+                    <li><i class="fa fa-ellipsis-v" id="settings"></i></li>
+                </ul>
+            </div>
+            <!--end of tools-->
+        </div>
+        <!--end of toolbar-->
+
+        <div class="filters">
+            <ul>
+                <li id="blog-filter">Blog</li>
+                <li id="portfolio-filter">Portfolio</li>
+            </ul>
+        </div>
+        <!--end of filters-->
+
+
+        <div id="plus" class="hidden"><i class="fa fa-pencil fa-lg icon"></i></div>
+    </div>
+    <!--end of bodyholder-->
+
+
+    <div id="activityform">
+        <div id="formHolder">
+            <form action="#" onsubmit="event.preventDefault(); postComment()">
+                <header>
+                    <h2>Post a New Activity</h2>
+                </header>
+                <div>
+                    <input type="text" id="name" placeholder="Name" />
                 </div>
                 <div>
-                  <h2 class="header">See the New Blogs</h2>
-                  <div id="comments"></div>
+                    <textarea id="comment" rows="3" cols="30" placeholder="Comment" name="editor1"></textarea>
                 </div>
-              </div>
-            </div>
-          </div>
-      
-    </div><!--end of Feed-->
-    </div><!-- End of Content-->   
-    </div><!--end of allholder-->
-    
-    <div class="bodyholder">
-      <div id="status" class="status-bar">
-   
-      </div><!--End of Status Bar-->
-      <div class="toolbar">
-          <div class='nav-links'>
-              <!-- Log in/ log out button goes here -->
-          </div>
-        <div id="hamburger">
-          <i class="fa fa-bars"></i>
-        </div><!--end of hamburger-->
-        
-        <div id="apptitle"><h1>News Feed</h1></div>
-        
-        <div id="tools">
-          <ul>
-            <li><i class="fa fa-search" id="search"></i></li>
-            <li><i class="fa fa-ellipsis-v" id="settings"></i></li>
-          </ul>
-        </div><!--end of tools-->
-      </div><!--end of toolbar-->
-      
-      <div class="filters">
-        <ul>
-          <li id="blog-filter">Blog</li>
-          <li id="portfolio-filter">Portfolio</li>
-        </ul>
-      </div><!--end of filters-->
-             
-                                          
-      <div id="plus" class="hidden"><i class="fa fa-pencil fa-lg icon"></i></div>
-    </div><!--end of bodyholder-->
-    
-    
-   <div id="activityform">
-   <div id="formHolder">  
-      <form action="#" onsubmit="event.preventDefault(); postComment()">
-      <header><h2>Post a New Activity</h2></header>
-          <div> 
-            <input type="text" id="name" placeholder="Name"/>
-          </div>
-          <div>
-            <textarea id="comment" rows="3" cols="30" placeholder="Comment" name="editor1"></textarea>
-          </div>
-          <button type="submit">submit</button>
-        </form>    
-   </div><!--End FormHolder-->
-     
-   <div id="spacer"></div>  
-    
-    </div><!--End ActivityForm      
-    -->
+                <button type="submit">submit</button>
+            </form>
+        </div>
+        <!--End FormHolder-->
 
-    <script>
-        var config = {
-           apiKey: "AIzaSyBClVw87bbB4rzjSrTyy-DDs24YSizdsqQ",
-           authDomain: "lab5-51c5e.firebaseapp.com",
-           databaseURL: "https://lab5-51c5e.firebaseio.com",
-           projectId: "lab5-51c5e",
-           storageBucket: "lab5-51c5e.appspot.com",
-           messagingSenderId: "254036744848"
-         };
-         firebase.initializeApp(config);
-         
-         const database = firebase.firestore();
-   database.settings({
-       timestampsInSnapshots: true
-   });</script>
-    
+        <div id="spacer"></div>
+
+    </div>
+    <!--End ActivityForm-->
+    <script src="js/firebase.js"></script>
+
     <script src="js/main.js"></script>
 
-
     <script src="js/not.js"></script>
-    
-  </body>
+
+</body>
 </html>
