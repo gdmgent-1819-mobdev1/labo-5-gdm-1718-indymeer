@@ -44,19 +44,38 @@ DeletePost = (id) => {
 
         snapshot.ref.remove();
 
+    })
+        .then(() => {
+            GetNotification(`Deleted i see - Yoda`)
+            document.getElementById('feed-item').innerHTML = ""
 
+        })
+        .catch(error => alert('error'));
+}
+   
+
+
+
+// edit post
+
+EditPost = (e) => {
+    document.querySelector('#activityform').style.cssText = "height: 500px; padding: 20px; opacity: 1; z-index: 110; ";
+    form.disabled = true;
+    e.stopPropagation();
+
+
+    var ref = firebase.database().ref('content');
+    ref.orderByChild('id').equalTo(id).on('child_added', (snapshot) => {
+
+        document.querySelector('#formHolder #name').value = ref.name;
+        myEditor.setData(comment);
+        document.getElementById(id).value = firebase.auth().currentUser.uid;
     });
-
-    //    database.collection('feed-item').doc(id).delete()
-    //
-    //        .then(() => {
-    //            GetNotification(`Deleted i see - Yoda`)
-    //            document.getElementById('feed-item').innerHTML = ""
-    //
-    //        })
-    //        .catch(error => alert('error'));
 }
 
+
+
+// CLICK ANYWHERE TO HIDE FORM
 
 function closest(e, t) {
     return !e ? false : e === t ? true : closest(e.parentNode, t);
@@ -152,8 +171,8 @@ function addComment(id, name, comment, timeStamp, author, doc) {
    
   </div><!--end of text-holder--> 
   <div class="post-options-holder">
-    <div id= "tools" class="hidden" >
-    <i class="fa fa-ellipsis-v " id="postsettings" onclick= "createEditor();"></i>
+    <div id= "tools" class="" >
+    <i class="fa fa-ellipsis-v " id="postsettings" onclick= "EditPost('${id}');"></i>
     </div><!--End Tools-->
     <div id= "tools" class="" >
     <i class="fa fa-trash " id="trashsettings" onclick= "DeletePost('${id}');"></i>
@@ -171,8 +190,7 @@ ${comments.innerHTML}
 // ADD CK EDITOR
 var myEditor;
 
-ClassicEditor
-    .create(document.querySelector('#comment'))
+ClassicEditor.create(document.querySelector('#comment'))
     .then(editor => {
         console.log('Editor was initialized', editor);
         myEditor = editor;
