@@ -1,3 +1,20 @@
+/***
+ * 
+ *  what to do: 
+ * google signin
+ * bij edit button de form laten tonen (al iets toegevoegd op regel 254);
+ * 
+ * bugs needs to be smashed:
+ * edit post (regel 73) values blijven undefined geven;
+ * de form blijft display none als de edit button wordt geduwt (code van de click op regel 94)
+ * 
+ * 
+ * 
+ */
+
+
+
+
 function createNode(element) {
     return document.createElement(element);
 }
@@ -58,19 +75,16 @@ DeletePost = (id) => {
 
 // edit post
 
-EditPost = (e) => {
-    document.querySelector('#activityform').style.cssText = "height: 500px; padding: 20px; opacity: 1; z-index: 110; ";
-    form.disabled = true;
-    e.stopPropagation();
-
-
+EditPost = (id, comment, e) => {
+   
     var ref = firebase.database().ref('content');
     ref.orderByChild('id').equalTo(id).on('child_added', (snapshot) => {
 
-        document.querySelector('#formHolder #name').value = ref.name;
+        document.querySelector('#formHolder #name').value =  database.collection('feed-items').name;
         myEditor.setData(comment);
         document.getElementById(id).value = firebase.auth().currentUser.uid;
     });
+
 }
 
 
@@ -230,7 +244,7 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 // ADD eventlisteners when element is created
 
-document.addEventListener('click', (event) => {
+document.addEventListener('click', (event, e) => {
     if (event.target) {
         if (event.target.id == 'logout') {
             logOut();
@@ -238,6 +252,10 @@ document.addEventListener('click', (event) => {
         if (event.target.classList.contains('editPost')) {
             let post_id = event.target.id.split('_')[1];
             editPost(post_id);
+            document.querySelector('#activityform').style.cssText = "height: 500px; padding: 20px; opacity: 1; z-index: 110; display:block!important; ";
+
+            more.disabled = true;
+            e.stopPropagation();
         }
         if (event.target.classList.contains('deletePost')) {
             let post_id = event.target.id.split('_')[1];
