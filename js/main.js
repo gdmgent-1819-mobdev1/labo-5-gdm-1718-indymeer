@@ -61,13 +61,14 @@ DeletePost = (id) => {
 
         snapshot.ref.remove();
 
-    })
-        .then(() => {
-            GetNotification(`Deleted i see - Yoda`)
-            document.getElementById('feed-item').innerHTML = ""
-
-        })
-        .catch(error => alert('error'));
+    }), function(error) {
+        if (error) {
+          // The write failed...
+        } else {
+            GetNotification(`Deleted i see - Yoda`)      
+          }
+        }
+       
 }
    
 
@@ -75,15 +76,26 @@ DeletePost = (id) => {
 
 // edit post
 
-EditPost = (id, comment, e) => {
-   
-    var ref = firebase.database().ref('content');
-    ref.orderByChild('id').equalTo(id).on('child_added', (snapshot) => {
+EditPost = (id, name) => {
+    document.querySelector('#activityform').style.cssText = "height: 500px; padding: 20px; opacity: 1; z-index: 110; ";
+    form.disabled = true;
 
-        document.querySelector('#formHolder #name').value =  database.collection('feed-items').name;
-        myEditor.setData(comment);
-        document.getElementById(id).value = firebase.auth().currentUser.uid;
-    });
+    ref.on("child_added", function (snapshot) {
+        var data = snapshot.val();
+
+
+            console.log(id);    
+                document.querySelector('#name').value = data.name;
+                myEditor.setData(data.comment);
+                document.getElementById(id).value = firebase.auth().currentUser.uid;
+
+    }), function(error) {
+        if (error) {
+          // The write failed...
+        } else {
+            DeletePost(id);
+        }
+        }
 
 }
 
@@ -146,7 +158,7 @@ function postComment() {
 
     var myRef = firebase.database().ref().push();
 
-    database.collection('feed-items').add({
+    database.collection('content').add({
         id: myRef.key,
         name: name,
         comment: comment,
