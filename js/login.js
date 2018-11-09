@@ -12,22 +12,19 @@ const userForms = document.getElementById('user_options-forms');
 const Goback = document.getElementById('goBack');
 const submitLogin = document.getElementById('btn_login');
 const submitRegister = document.getElementById('btn_signup');
+const googleButton = document.getElementById('googlebttn');
 
 
 // google login
-
-function onSignIn(googleUser) {
-  console.log('Google Auth Response', googleUser);
-  // We need to register an Observer on Firebase Auth to make sure auth is initialized.
-  var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser) {
-    unsubscribe();
-    // Check if we are already signed-in Firebase with the correct user.
-    if (!isUserEqual(googleUser, firebaseUser)) {
-      // Build Firebase credential with the Google ID token.
-      var credential = firebase.auth.GoogleAuthProvider.credential(
-          googleUser.getAuthResponse().id_token);
-      // Sign in with credential from the Google user.
-      firebase.auth().signInAndRetrieveDataWithCredential(credential).catch(function(error) {
+var provider = new firebase.auth.GoogleAuthProvider();
+googleLogIn = () => {
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        // ...
+      }).catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -37,25 +34,11 @@ function onSignIn(googleUser) {
         var credential = error.credential;
         // ...
       });
-    } else {
-      console.log('User already signed-in Firebase.');
-    }
-  });
+
 }
 
-function isUserEqual(googleUser, firebaseUser) {
-    if (firebaseUser) {
-      var providerData = firebaseUser.providerData;
-      for (var i = 0; i < providerData.length; i++) {
-        if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
-            providerData[i].uid === googleUser.getBasicProfile().getId()) {
-          // We don't need to reauth the Firebase connection.
-          return true;
-        }
-      }
-    }
-    return false;
-  }
+
+googleButton.addEventListener('click', googleLogIn);
 
 
 // turn back to blog

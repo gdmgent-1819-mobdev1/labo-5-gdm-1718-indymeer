@@ -41,7 +41,7 @@ let editor;
 function logOut() {
     firebase.auth().signOut()
         .then(() => {
-            GetNotification(`signedOut`, `Thank you come again - Apu`)
+            GetNotification('signedOut`, `Thank you come again - Apu')
             window.location.reload();
         })
 }
@@ -61,13 +61,9 @@ DeletePost = (id) => {
 
         snapshot.ref.remove();
 
-    }), function(error) {
-        if (error) {
-          // The write failed...
-        } else {
-            GetNotification(`Deleted i see - Yoda`)      
-          }
-        }
+    })
+    GetNotification('Deleted i see - Yoda')      
+    
        
 }
    
@@ -79,8 +75,9 @@ DeletePost = (id) => {
 EditPost = (id, name) => {
     document.querySelector('#activityform').style.cssText = "height: 500px; padding: 20px; opacity: 1; z-index: 110; ";
     form.disabled = true;
+    var ref = firebase.database().ref('content');
 
-    ref.on("child_added", function (snapshot) {
+    ref.orderByChild('id').equalTo(id).on('child_added', (snapshot) =>{
         var data = snapshot.val();
 
 
@@ -89,13 +86,13 @@ EditPost = (id, name) => {
                 myEditor.setData(data.comment);
                 document.getElementById(id).value = firebase.auth().currentUser.uid;
 
-    }), function(error) {
-        if (error) {
-          // The write failed...
-        } else {
-            DeletePost(id);
-        }
-        }
+                var d = document.getElementById(id);
+        d.className += " hidden";
+
+        snapshot.ref.remove();
+
+    })
+    
 
 }
 
