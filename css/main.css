@@ -583,7 +583,7 @@ input::placeholder {
   top: 50%;
   left: 30px;
   width: calc(50% - 30px);
-  min-height: 420px;
+  min-height: 551px;
   background-color: #fff;
   border-radius: 3px;
   box-shadow: 2px 0 15px rgba(0, 0, 0, 0.25);
@@ -655,7 +655,8 @@ input::placeholder {
   background-color: #e14641;
 }
 .user_options-forms .user_forms-signup,
-.user_options-forms .user_forms-login {
+.user_options-forms .user_forms-login,
+.user_options-forms .user_forms-password  {
   position: absolute;
   left: 40px;
   width: calc(100% - 80px);

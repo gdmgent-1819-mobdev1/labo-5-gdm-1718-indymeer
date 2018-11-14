@@ -13,6 +13,7 @@ const Goback = document.getElementById('goBack');
 const submitLogin = document.getElementById('btn_login');
 const submitRegister = document.getElementById('btn_signup');
 const googleButton = document.getElementById('googlebttn');
+const LostSubmit = document.getElementById('lost_send');
 
 
 // google login
@@ -42,8 +43,12 @@ googleButton.addEventListener('click', googleLogIn);
 
 
 // turn back to blog
-toHome = () => {
+function toHome () {
     window.location.replace('../index.html');
+}
+
+function toLogin() {
+    window.location.replace('../pages/login.html');
 }
 
 
@@ -104,7 +109,6 @@ function signup(e) {
 
 // PASSWORD
 
-
 function PasswordLost() {
     const email = document.getElementById('emailForgot').value;
     firebase.auth().sendPasswordResetEmail(email)
@@ -113,12 +117,7 @@ function PasswordLost() {
             toHome();
         })
         .catch(function (error) {
-            // Handle Errors here.
-            let errorCode = error.code;
-            let errorMessage = error.message;
-
-            console.log(errorCode, errorMessage);
-            document.getElementsByClassName('alerts').innerHTML = errorCode + " - " + errorMessage;
+    
         });
 }
 
